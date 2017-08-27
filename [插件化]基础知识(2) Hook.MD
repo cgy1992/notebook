@@ -10,3 +10,6 @@ Android 本身不提供这种拦截机制，但是我们可以通过特殊的手
 - 利用代理模式来代理系统类的运行并拦截需要拦截的方法
 
 - 使用反射将这个系统类替换成自己的代理类
+
+
+![](http://blogqn.maintel.cn/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84hook%E6%9C%BA%E5%88%B6.png?e=3080650131&token=kDSqSAyKGaf8JcHprWP7S4W3hGuz8kDIEhzAufWH:mJTZljePV685WLpKgFgyLxrojh4=)
