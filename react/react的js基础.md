@@ -59,3 +59,19 @@ export default Timer;
 这里，没有进行绑定，但是一样可以使用 react 的 state 等，因为：
 
 > 箭头函数会捕获其所在上下文的  this 值，作为自己的 this 值
+
+# const {xxx} 和 const xxx 的区别
+
+```js
+
+        this.state = {
+            name:'maintel',
+            age:20,
+        }
+
+      const {name} = this.state;  // √
+      const age = this.state;    //  ×
+      const myAge = this.state.age // √
+```
+
+如上有 state 中赋值的 name 和 age，下面在某个地方用到了它，第一种调用能够拿到 name，但是第二种调用时拿不到 age 的，加个 `{}` 就能够进行自动赋值，但是前提是必须保证名字一致，而不加 `{}` 则必须指定到具体的属性值赋值，但是它的名字可以随便命名。
