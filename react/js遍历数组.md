@@ -17,3 +17,7 @@ for (var value of myArray) {
 - 这是最简洁、最直接的遍历数组元素的语法
 - 这个方法避开了for-in循环的所有缺陷
 - 与forEach()不同的是，它可以正确响应break、continue和return语句
+
+# 数组与数组的拷贝和赋值
+
+http://www.cnblogs.com/johnblogs/p/7218344.html
