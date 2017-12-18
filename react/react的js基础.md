@@ -77,3 +77,26 @@ export default Timer;
 如上有 state 中赋值的 name 和 age，下面在某个地方用到了它，第一种调用能够拿到 name，但是第二种调用时拿不到 age 的，加个 `{}` 就能够进行自动赋值，但是前提是必须保证名字一致，而不加 `{}` 则必须指定到具体的属性值赋值，但是它的名字可以随便命名。
 
 let 也是一样的。
+
+调用函数
+
+# 调用方法
+
+```js
+{this.methodName()} // 请牢记移动有括号
+```
+
+# 设置布局高度充满窗口
+
+```js
+style={{height:window.screen.height}}
+```
+
+# 使用 CSS
+
+- 方法一
+
+```js
+require("../css/tabtest.css"); //导入 CSS 文件
+<div className="bgWhite"></div> // 使用
+```
