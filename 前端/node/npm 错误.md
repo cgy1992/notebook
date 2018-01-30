@@ -1,3 +1,9 @@
+
+<!-- TOC -->
+
+- [安装依赖包报错 ENOENT: no such file or directory" on .DELETE](#安装依赖包报错-enoent-no-such-file-or-directory-on-delete)
+
+<!-- /TOC -->
 # 安装依赖包报错 ENOENT: no such file or directory" on .DELETE
 
 解决办法：
