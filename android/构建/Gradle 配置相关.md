@@ -57,4 +57,3 @@ $ adb shell am startservice com.demo.tinkerdemo/com.android.tools.fd.runtime.Ins
 $ adb shell am start -n "com.demo.tinkerdemo/com.demo.tinkerdemo.MainActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
 Connected to process 30679 on device vivo-vivo_y51a-4baba797
 
-
