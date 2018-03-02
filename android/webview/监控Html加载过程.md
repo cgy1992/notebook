@@ -35,9 +35,13 @@ LogUtils.e("onResume::" + System.currentTimeMillis());
 **原生监控结果**
 
 > E/tag: onCreate::1519980761086
+
 > E/tag: onResume::1519980761202
+
 > E/tag: onPageStarted::1519980761246
+
 > E/tag: onPageFinished::1519980762874
+
 > ...
 
 可以看到主要耗时是在 Html 的加载过程中。
