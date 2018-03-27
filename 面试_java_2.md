@@ -144,4 +144,7 @@ if (p.hash == hash &&((k = p.key) == key || (key != null && key.equals(k)))){
 
 # 说说你对Java反射的理解
 
+当我们的程序在运行时，需要动态的加载一些类这些类可能之前用不到所以不用加载到jvm，而是在运行时根据需要才加载
+
+[参考](http://www.sczyh30.com/posts/Java/java-reflection-1/#%E4%B8%80%E3%80%81%E5%9B%9E%E9%A1%BE%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%B0%84%EF%BC%9F)
 
