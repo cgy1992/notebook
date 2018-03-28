@@ -144,7 +144,96 @@ if (p.hash == hash &&((k = p.key) == key || (key != null && key.equals(k)))){
 
 # 说说你对Java反射的理解
 
-当我们的程序在运行时，需要动态的加载一些类这些类可能之前用不到所以不用加载到jvm，而是在运行时根据需要才加载
+当我们的程序在运行时，需要动态的加载一些类这些类可能之前用不到所以不用加载到jvm，而是在运行时根据需要才加载，或者动态的去访问一些类的私有属性或者方法。
+
+反射可以是系统更灵活和易于扩展。比如 spring 的配置这些都是反射来做的。mybatis 也是
+
+使用场景：
+
+- 需要访问隐藏属性或者调用方法改变程序原来的逻辑，这个在开发中是很常见的，由于一些原因，系统并没有开放一些接口出来，这个时候利用反射是一个有效的解决办法。
+- 自定义注解，注解就是在运行时利用反射机制来获取的。
+- 在开发中动态加载类，比如在 Android 中的动态加载解决65k问题等等，模块化和插件化都离不开反射。
 
 [参考](http://www.sczyh30.com/posts/Java/java-reflection-1/#%E4%B8%80%E3%80%81%E5%9B%9E%E9%A1%BE%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%B0%84%EF%BC%9F)
 
+# 说说你对Java注解的理解
+
+注解本身不能对代码运行产生影响，但是注解可以作为一个标记，用反射之类的手段获取到这个标记后，就能对标记的内容进行处理。例如在方法参数上加注解，用反射获取到注解后对该注解标记的形式参数注入实际参数。
+
+注解在 java 和 android 中的应用有很多，比如 java 中的 spring，android 中的 butterKnife，Dagger，retrofit 等。
+
+[参考](https://blog.csdn.net/javazejian/article/details/71860633)
+
+# 说说你对依赖注入的理解
+
+说道依赖注入就不得不提控制反转，他们是同一个概念从不同的角度来理解：
+
+- 控制反转（IOC）
+
+  就是创建对象的控制权进行转移，以前创建对象的主动权和创建时机是由自己把控的，而现在这种权力转移到第三方。
+
+- 依赖注入 (DI)
+
+  就是将当前类所依赖的对象通过注入的方式得到，而不再自己去实例化这个对象。
+
+依赖注入的方式有很多：通过构造函数，通过 setter 方法，通过接口等。
+
+例子：
+```java
+class A{
+  B b;      // 这里 b 就是 A 的依赖
+  public A(){
+    b = new B();   //  现在没有进行依赖注入如果B 的构造方法经常进行变动，则A类也同样需要不断的修改
+  }
+}
+```
+上面的就是传统的方法，下面的写法就实现了简单的依赖注入：
+
+```java
+class A{
+  B b;
+  public A(B b){ // 通过构造函数进行依赖注入
+    this.b = b;
+  }
+}
+```
+
+上面这段代码就是进行了简单的依赖注入，同时也是控制反转，因为 A 类不在关心它所依赖的 b 实例化的时机在哪里，只要在我 A 类进行实例化的时候通过构造函数给我就行了，同时也不再关心怎么进行实例化，无论B 类如何变动 对A 类都没有影响。这就是控制反转和依赖注入的好处。
+
+能够是系统更灵活，代码的复用率也更高。
+
+比如 spring 控制反转的思想就贯穿始终。还有 android 的 Dagger
+
+[参考](http://luanxiyuan.iteye.com/blog/2279954)
+[参考](https://blog.csdn.net/briblue/article/details/75578459)
+
+# 说一下泛型原理，并举例说明
+
+泛型的实现原理是类型擦除，
+```java
+        List<String> arrayList1=new ArrayList<String>();
+        arrayList1.add("abc");
+        ArrayList<Integer> arrayList2=new ArrayList<Integer>();
+        arrayList2.add(123);
+        System.out.println(arrayList1.getClass()==arrayList2.getClass()); // 返回为 true
+```
+
+[参考](https://blog.csdn.net/wisgood/article/details/11762427)
+[参考](https://blog.csdn.net/shinecjj/article/details/52075499)
+
+# Java中String的了解
+
+String 不可被继承
+
+new string 结果指向堆内存
+string = “aaa” 是指向一个常量池，String 是值不可变的，每次更改 String 对象的值都会生成新的对象。
+
+# String为什么要设计成不可变的
+
+节省内存，提高效率，以及安全性
+[参考](https://www.zhihu.com/question/31345592)
+
+# Object类的equal和hashCode方法重写，为什么
+
+重写 hashCode 的时候就要重写 equal 在使用散列表类的时候保证了可用性，以避免不必要的错误，
+还有就是提高效率，比如将一个自定义的实体类作为 hashMap 的 key 的时候就最好重写 equal 和 hashCode
