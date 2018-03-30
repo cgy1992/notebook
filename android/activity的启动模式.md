@@ -54,9 +54,9 @@
     
 * slingInstance模式启动的activity会独占一个任务栈。
     
-* 被singleInstance模式的Activity开启的其他activity，会在新的任务中启动，但不一定开启新的任务，也可能在已有的一个任务中开启
+* 被singleInstance模式的Activity开启的其他activity，会在新的任务栈中启动，但不一定开启新的任务栈，也可能在已有的一个任务栈中开启
 
-实际验证如果以startActivityForResult启动一个 slingInstance模式的activity,则不会和启动它的那个activity同一个任务栈，而此时这个activity再启动其他的activity会使这个activity在一个新的任务栈中，并且是被以slingTask模式启动。
+实际验证如果以startActivityForResult启动一个 slingInstance模式的activity,则会和启动它的那个activity同一个任务栈，而此时这个activity再启动其他的activity会使这个activity在一个新的任务栈中，并且是被以slingTask模式启动。
 
 如下：
 
@@ -64,45 +64,42 @@
 
 - 1、此时 MainActivity 通过 startActivityForResult 启动 SecondActivity 结果如下：
 
-
-    Running activities (most recent first):
-      TaskRecord{2a04f0ca #58 A=maintel.activitylaunchmode U=0 sz=2}
-        Run #1: ActivityRecord{3beb0d4 u0 maintel.activitylaunchmode/.SecondActivity t58}
-        Run #0: ActivityRecord{19d20c u0 maintel.activitylaunchmode/.MainActivity t58}
-    Running activities (most recent first):
-      TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
-        Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
+        Running activities (most recent first):
+          TaskRecord{2a04f0ca #58 A=maintel.activitylaunchmode U=0 sz=2}
+            Run #1: ActivityRecord{3beb0d4 u0 maintel.activitylaunchmode/.SecondActivity t58}
+            Run #0: ActivityRecord{19d20c u0 maintel.activitylaunchmode/.MainActivity t58}
+        Running activities (most recent first):
+          TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
+            Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
 
 可以看到 MainActivity 和 SecondActivity 在同一个任务栈中；
 
 - 2、此时再启动 ThirdActivity 然后从 ThirdActivity  可以看到任务栈如下：
 
-
-    Running activities (most recent first):
-      TaskRecord{204dcae0 #62 A=maintel.activitylaunchmode U=0 sz=2}
-        Run #2: ActivityRecord{29af2926 u0 maintel.activitylaunchmode/.SecondActivity t62}
-      TaskRecord{3e2fd199 #63 A=maintel.activitylaunchmode U=0 sz=1}
-        Run #1: ActivityRecord{3adb70ac u0 maintel.activitylaunchmode/.ThirdActivity t63}
-      TaskRecord{204dcae0 #62 A=maintel.activitylaunchmode U=0 sz=2}
-        Run #0: ActivityRecord{34495477 u0 maintel.activitylaunchmode/.MainActivity t62}
-    Running activities (most recent first):
-      TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
-        Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
+        Running activities (most recent first):
+          TaskRecord{204dcae0 #62 A=maintel.activitylaunchmode U=0 sz=2}
+            Run #2: ActivityRecord{29af2926 u0 maintel.activitylaunchmode/.SecondActivity t62}
+          TaskRecord{3e2fd199 #63 A=maintel.activitylaunchmode U=0 sz=1}
+            Run #1: ActivityRecord{3adb70ac u0 maintel.activitylaunchmode/.ThirdActivity t63}
+          TaskRecord{204dcae0 #62 A=maintel.activitylaunchmode U=0 sz=2}
+            Run #0: ActivityRecord{34495477 u0 maintel.activitylaunchmode/.MainActivity t62}
+        Running activities (most recent first):
+          TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
+            Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
 
 可以看到 ThirdActivity 在一个新的任务栈中，而 MainActivity 和 SecondActivity 在同一个任务栈中。
 
 - 3、然后从 ThirdActivity 中再启动 SecondActivity，然后再次启动 ThirdActivity，可以看到：
 
-
-    Running activities (most recent first):
-      TaskRecord{1b8682ef #65 A=maintel.activitylaunchmode U=0 sz=1}
-        Run #2: ActivityRecord{14ac7270 u0 maintel.activitylaunchmode/.ThirdActivity t65}
-      TaskRecord{2804c1fc #64 A=maintel.activitylaunchmode U=0 sz=2}
-        Run #1: ActivityRecord{838bca u0 maintel.activitylaunchmode/.SecondActivity t64}
-        Run #0: ActivityRecord{2586ef4b u0 maintel.activitylaunchmode/.MainActivity t64}
-    Running activities (most recent first):
-      TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
-        Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
+        Running activities (most recent first):
+          TaskRecord{1b8682ef #65 A=maintel.activitylaunchmode U=0 sz=1}
+            Run #2: ActivityRecord{14ac7270 u0 maintel.activitylaunchmode/.ThirdActivity t65}
+          TaskRecord{2804c1fc #64 A=maintel.activitylaunchmode U=0 sz=2}
+            Run #1: ActivityRecord{838bca u0 maintel.activitylaunchmode/.SecondActivity t64}
+            Run #0: ActivityRecord{2586ef4b u0 maintel.activitylaunchmode/.MainActivity t64}
+        Running activities (most recent first):
+          TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
+            Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
 
 可以看到 ThirdActivity 在任务栈中只有一个，因此可以知道此时 ThirdActivity 是通过 slingTask模式启动的。
 
@@ -112,47 +109,47 @@
 
 还是同样的 activity 同样的步骤：
 
-- 1、此时 MainActivity 通过 startActivityForResult 启动 SecondActivity 结果如下：
+- 1、此时 MainActivity 通过 startActivity 启动 SecondActivity 结果如下：
 
-    Running activities (most recent first):
-      TaskRecord{3e330aa0 #67 A=maintel.activitylaunchmode U=0 sz=1}
-        Run #1: ActivityRecord{13ca517 u0 maintel.activitylaunchmode/.SecondActivity t67}
-      TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=1}
-        Run #0: ActivityRecord{2ec34a09 u0 maintel.activitylaunchmode/.MainActivity t66}
-    Running activities (most recent first):
-      TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
-        Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
+        Running activities (most recent first):
+          TaskRecord{3e330aa0 #67 A=maintel.activitylaunchmode U=0 sz=1}
+            Run #1: ActivityRecord{13ca517 u0 maintel.activitylaunchmode/.SecondActivity t67}
+          TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=1}
+            Run #0: ActivityRecord{2ec34a09 u0 maintel.activitylaunchmode/.MainActivity t66}
+        Running activities (most recent first):
+          TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
+            Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
 
 可以看到 SecondActivity 和 MainActivity 不在同一个任务栈中了已经。
 
 - 2、此时再启动 ThirdActivity 然后从 ThirdActivity  可以看到任务栈如下：
 
-    Running activities (most recent first):
-      TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=2}
-        Run #2: ActivityRecord{20b87659 u0 maintel.activitylaunchmode/.ThirdActivity t66}
-      TaskRecord{3e330aa0 #67 A=maintel.activitylaunchmode U=0 sz=1}
-        Run #1: ActivityRecord{13ca517 u0 maintel.activitylaunchmode/.SecondActivity t67}
-      TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=2}
-        Run #0: ActivityRecord{2ec34a09 u0 maintel.activitylaunchmode/.MainActivity t66}
-    Running activities (most recent first):
-      TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
-        Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
+          Running activities (most recent first):
+            TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=2}
+              Run #2: ActivityRecord{20b87659 u0 maintel.activitylaunchmode/.ThirdActivity t66}
+            TaskRecord{3e330aa0 #67 A=maintel.activitylaunchmode U=0 sz=1}
+              Run #1: ActivityRecord{13ca517 u0 maintel.activitylaunchmode/.SecondActivity t67}
+            TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=2}
+              Run #0: ActivityRecord{2ec34a09 u0 maintel.activitylaunchmode/.MainActivity t66}
+          Running activities (most recent first):
+            TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
+              Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
 
 可以看到 MainActivity 和 ThirdActivity 在同一个任务栈中，而 SecondActivity 在单独的任务栈中
 
 - 3、然后从 ThirdActivity 中再启动 SecondActivity，然后再次启动 ThirdActivity，可以看到：
 
-    Running activities (most recent first):
-      TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=3}
-        Run #3: ActivityRecord{3687d1ef u0 maintel.activitylaunchmode/.ThirdActivity t66}
-      TaskRecord{3e330aa0 #67 A=maintel.activitylaunchmode U=0 sz=1}
-        Run #2: ActivityRecord{13ca517 u0 maintel.activitylaunchmode/.SecondActivity t67}
-      TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=3}
-        Run #1: ActivityRecord{20b87659 u0 maintel.activitylaunchmode/.ThirdActivity t66}
-        Run #0: ActivityRecord{2ec34a09 u0 maintel.activitylaunchmode/.MainActivity t66}
-    Running activities (most recent first):
-      TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
-        Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
+        Running activities (most recent first):
+          TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=3}
+            Run #3: ActivityRecord{3687d1ef u0 maintel.activitylaunchmode/.ThirdActivity t66}
+          TaskRecord{3e330aa0 #67 A=maintel.activitylaunchmode U=0 sz=1}
+            Run #2: ActivityRecord{13ca517 u0 maintel.activitylaunchmode/.SecondActivity t67}
+          TaskRecord{e63ecb1 #66 A=maintel.activitylaunchmode U=0 sz=3}
+            Run #1: ActivityRecord{20b87659 u0 maintel.activitylaunchmode/.ThirdActivity t66}
+            Run #0: ActivityRecord{2ec34a09 u0 maintel.activitylaunchmode/.MainActivity t66}
+        Running activities (most recent first):
+          TaskRecord{5d30fb #29 A=com.android.launcher3 U=0 sz=1}
+            Run #0: ActivityRecord{d0dd3bb u0 com.android.launcher3/.Launcher t29}
 
 可以看到t66任务栈中存在一个 MainActivity 以及两个 ThirdActivity ， SecondActivity 同样在单独的任务栈中
 
