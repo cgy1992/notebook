@@ -328,6 +328,8 @@ BroadcastReceiver 也可以看作是一个跨进程通讯的手段，用来监�
 
   BroadcastReceiver 可以使用静态或者动态的方式注册，LocalBroadcastReceiver 只能使用动态注册，发送注册等必须使用 LocalBroadcastManager 的方法。
 
+  # 
+
 
 
 
