@@ -324,11 +324,188 @@ BroadcastReceiver 也可以看作是一个跨进程通讯的手段，用来监�
   ```
   registerReceiver 和 unregisterReceiver 一定要成对出现，所以应用退出后不能继续工作。
 
-  # BroadcastReceiver，LocalBroadcastReceiver 区别
+# BroadcastReceiver，LocalBroadcastReceiver 区别
 
   BroadcastReceiver 可以使用静态或者动态的方式注册，LocalBroadcastReceiver 只能使用动态注册，发送注册等必须使用 LocalBroadcastManager 的方法。
 
-  # 
+# AlertDialog,popupWindow,Activity区别
+
+  - AlertDialog 是非阻塞式对话框，用来提示一些简单的信息，当它弹出是后台的事情还可以继续执行。
+  - PopupWindow 是阻塞式对话框，可以调用任意布局，当它弹出时程序会等待，直到调用 popupWindow.dismiss() 方法退出。
+  - Activity 是 Android 的四大组件之一，用来显示 View 以及与用户交互。
+
+  [参考](https://blog.csdn.net/android_cmos/article/details/51223776)
+
+# Application 和 Activity 的 Context 对象的区别
+
+  生命周期不同，Application 的 Context 生命周期和 Application 相同，Activity 的 Context 的生命周期和 Activity 相关，伴随着 Activity 的销毁而销毁。因此不要让生命周期长的对象持有 Activity 的 Context。
+
+  ![context 区别](https://camo.githubusercontent.com/c64e45b0169c1a16912a94dd5174c944394506c1/68747470733a2f2f7773322e73696e61696d672e636e2f6c617267652f303036744e633739677931666f7864616d736465676a3330787330693867726b2e6a7067)
+
+  - `[1]`:启动Activity在这些类中是可以的，但是需要创建一个新的task。一般情况不推荐。
+  - `[2]`:在这些类中去layout inflate是合法的，但是会使用系统默认的主题样式，如果你自定义了某些样式可能不会被使用。
+  - `[3]`:在receiver为null时允许，在4.2或以上的版本中，用于获取黏性广播的当前值。（可以无视）
+
+# Android 属性动画特性
+
+- 应用范围更广泛，不局限于用在 View 上，可以使用在任意对象上，且该对象不需要 UI 界面
+- 当将属性动画作用于某个对象时，可以通过调用对象的 setXXX 方法实际改变对象的值。所以，当将属性动画作用于某个 View 时，View 对象对应的属性值会被改变。
+
+# 如何导入外部数据库?
+
+分两步走
+
+- 首先通过读取文件的方式将外部数据库文件读入进来
+- 打开数据库进行操作
+
+```java
+   public void copyDBFile() {
+        File dir = new File(DB_PATH);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File dbFile = new File(DB_PATH + DB_NAME);
+        if (!dbFile.exists()) {
+            InputStream is;
+            OutputStream os;
+            try {
+                is = mContext.getResources().getAssets().open(ASSETS_NAME);
+                os = new FileOutputStream(dbFile);
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int length;
+                while ((length = is.read(buffer, 0, buffer.length)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+                os.flush();
+                os.close();
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+```
+# LinearLayout、RelativeLayout、FrameLayout的特性及对比，并介绍使用场景
+
+- LinearLayout
+
+  特点：层级分明，所有的控件都按照顺序进行排列，同层的控件之间不存在依赖关系，可以很好地控制显示隐藏。
+
+  缺点：当页面复杂时会导致嵌套层级过多，从而导致绘制效率低下。
+
+  场景：简单的排列式布局页面。按照比例进行分配空间的布局更适用。
+
+- RelativeLayout
+
+  特点：通过控件之间的相对位置来确定位置的布局，能够以较少的层级实现比较复杂的页面。
+
+  缺点：是不同的控件之间的依赖关系比较严重，如果修改一个布局可能要修改很多地方。
+
+  场景：几乎可以实现任何布局，弥补了 LinearLayout 在复杂布局上面的缺点。
+
+- FrameLayout
+
+  特点：所有的控件都在最上角，后添加进去的覆盖先添加进去的。
+
+  缺点：没什么明显的缺点。
+
+  场景：适合做一个容器，用来向里面添加布局。
+
+# 谈谈对接口与回调的理解
+
+接口是一个抽象，不同的模块间可以对外暴露出他们的抽象接口；回调是一种机制，用以在不同模块间进行通讯，在面向对象语言中，回调可以通过接口或者抽象类来实现。一般开发中用来实现监听等都是使用了回调机制。
+
+题外，在函数式编程中可以不使用接口来实现回调，比如 kotlin 的高阶函数等。
+
+# 回调的原理
+
+回调的核心就是回调方将本身即 this 传递给调用方，这样调用方就可以在调用完毕之后告诉回调方它想要知道的信息。
+
+# 写一个回调demo
+
+```java
+
+interface MyCallBack{
+  void callBack();
+}
+// 调用方
+class A{
+  private MyCallBack myCallBack;
+  public void setMyCallBack(MyCallBack e){
+    myCallBack = e;
+  }
+}
+
+// 回调方
+class B{
+  A a = A();
+  a.setMyCallBack(new MyCallBack{
+    
+    @Override
+    public void callBack(){
+
+    }
+  })
+}
+```
+
+# 介绍下 SurfaceView
+
+SurfaceView 继承自 View，是对 View 的一次增强。主要有两点：
+
+- SurfaceView 可以在子线程中更新 UI，因此对于比较复杂的界面一次绘制事件较长，而 View 的 onDraw 方法是在主线程中执行的，如果耗时较长的话，容易造成卡顿。
+
+- SurfaceView在底层机制中就实现了双缓冲机制。因此在需要频繁的进行重绘的话，在普通的 View 中进行绘制的话，onDraw 方法被频繁调用，同样可能造成掉帧。
+
+      双缓冲技术是游戏开发中的一个重要的技术。当一个动画争先显示时，程序又在改变它，前面还没有显示完，程序又请求重新绘制，这样屏幕就会不停地闪烁。而双缓冲技术是把要处理的图片在内存中处理好之后，再将其显示在屏幕上。双缓冲主要是为了解决 反复局部刷屏带来的闪烁。把要画的东西先画到一个内存区域里，然后整体的一次性画出来。
+
+题外话：为什么 SurfaceView 这么多优点而其他的 View 不来实现呢？
+
+    因为 SurfaceView 自带一个 Surface，而这个不在View hierachy中，它的显示也不受View的属性控制，所以不能进行平移，缩放等变换，也不能放在其它 ViewGroup 中，一些 View 中的特性也无法使用，SurfaceView 不能嵌套使用。
+
+[原理分析](https://blog.csdn.net/luoshengyang/article/details/8661317)
+
+# RecycleView 的使用
+
+和普通 ListView 差不多，引入、设置 Adapter、设置 LayoutManager 等。
+
+# 序列化的作用，以及Android两种序列化的区别
+
+序列化是把对象转换成字节流，反序列化是把字节流转换成对象。在进行页面间通讯或者跨进程通讯，以及将对象进行持久化存储的时候使用。
+
+Android 的两种序列化方式分别为：
+
+- Serializable
+
+  是 Java 自带的序列化方式，使用简单，序列化的过程通过反射来实现，效率较低。
+
+- Parcelable
+
+  是 Android 特有的序列化方式，在内存中实现读写，但是使用比较麻烦需要自己来实现序列化的过程。
+
+不过需要说的是，虽然默认实现的情况下 Parcelable 比 Serializable 效率高，但是如果 Serializable 也自己手动实现了序列化过程的话，Serializable 的效率会更高。
+
+# 差值器（TimeInterpolator）、估值器（TypeEvaluator）
+
+在属性动画中使用，用来实现一些非线性的变化。
+
+- 差值器
+
+  根据时间流逝的百分比计算出当前属性值改变的百分比。 
+
+- 估值器
+
+  根据当前属性改变的百分比来计算改变后的属性值。
+
+# Android中数据存储方式
+
+- SharePreferences
+- SQLite
+- Contert Provider
+- File
+- 网络存储
+
+
 
 
 
