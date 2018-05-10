@@ -100,3 +100,22 @@ style={{height:window.screen.height}}
 require("../css/tabtest.css"); //导入 CSS 文件
 <div className="bgWhite"></div> // 使用
 ```
+
+# 值传递 ...
+
+... 是ES6语法中的解构赋值。最简单的使用如下：
+
+```js
+let props = {
+    a: 1,
+    b: 2
+}
+
+<Hello {…props}/> 
+```
+上面的 hello 实际上是和下面的等效的
+
+```html
+<Hello a=1 b=1 /> 
+```
+很神奇，... 是展开语法， react 会自动把对象中的变量和值当作是属性的赋值，所以 Hello 实际上就拿到了 a、b 两个属性，如果没有三个点的话，Hello 拿到的实际上就是 props 对象，使用的时候还需要自己从中取出变量和值。
