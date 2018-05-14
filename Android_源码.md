@@ -95,7 +95,19 @@ Volley 也有缺陷，比如不支持 post 大数据，所以不适合上传文�
 
 # 描述一次网络请求的流程
 
-域名解析、TCP的三次握手、建立TCP连接后发起HTTP请求、服务器响应HTTP请求、浏览器解析html代码，同时请求html代码中的资源（如js、css、图片等）、最后浏览器对页面进行渲染并呈现给用户
+域名解析、TCP的三次握手、建立TCP连接后发起HTTP请求、服务器响应HTTP请求
+
+[参考](https://www.linux178.com/web/httprequest.html)
+
+# HttpUrlConnection 和 okhttp关系
+
+从层级关系上来讲，两者位于同一层级，都是用 socket 实现了网络连接。但是两者在 IO 的实现方面不同，HttpUrlConnection 使用的是 InputStream 和 OutputStream，okhttp 使用的是 sink 和 source，同时 OkHttp 又封装了线程池，封装了数据转换，封装了参数使用、错误处理等，api 使用起来更加方便。
+
+# Bitmap 对象的理解
+
+Bitmap 是 android 中经常使用的一个类，它代表了一个图片资源。
+Bitmap 内存消耗严重，
+
 
 
 
