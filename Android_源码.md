@@ -106,7 +106,39 @@ Volley 也有缺陷，比如不支持 post 大数据，所以不适合上传文�
 # Bitmap 对象的理解
 
 Bitmap 是 android 中经常使用的一个类，它代表了一个图片资源。
-Bitmap 内存消耗严重，
+Bitmap 本身十分大严重消耗内存，具体大小可以参考[这里](https://github.com/maintel/notebook/blob/master/android/%E4%BD%A0%E7%9F%A5%E9%81%93%E4%BD%A0%E7%9A%84bitmap%E5%8D%A0%E5%A4%9A%E5%A4%A7%E4%B9%88.md)，所以在使用的时候要做好工作防止OOM，主要有以下方式：
+
+- 合理利用 inSampleSize 和矩阵
+- 合理选择 Bitmap 的像素格式
+- 及时回收内存
+- 合理的缓存
+- 合理的压缩图片
+- 捕获 OOM 异常
+
+[优化参考](https://cloud.tencent.com/developer/article/1071001)
+
+# ActivityThread，AMS，WMS的工作原理
+
+# 自定义 View 如何考虑机型适配
+
+# 自定义View的事件
+
+- 事件分发原理: 责任链模式，事件层层传递，直到被消费。
+- View 的 dispatchTouchEvent 主要用于调度自身的监听器和 onTouchEvent。
+- View的事件的调度顺序是 onTouchListener > onTouchEvent > onLongClickListener > onClickListener 。
+- 不论 View 自身是否注册点击事件，只要 View 是可点击的就会消费事件。
+- 事件是否被消费由返回值决定，true 表示消费，false 表示不消费，与是否使用了事件无关。
+- ViewGroup 中可能有多个 ChildView 时，将事件分配给包含点击位置的 ChildView。
+- ViewGroup 和 ChildView 同时注册了事件监听器(onClick等)，由 ChildView 消费。
+- 一次触摸流程中产生事件应被同一 View 消费，全部接收或者全部拒绝。
+- 只要接受 ACTION_DOWN 就意味着接受所有的事件，拒绝 ACTION_DOWN 则不会收到后续内容。
+- 如果当前正在处理的事件被上层 View 拦截，会收到一个 ACTION_CANCEL，后续事件不会再传递过来。
+
+[参考](http://www.gcssloop.com/customview/dispatch-touchevent-source)
+
+
+
+
 
 
 
