@@ -136,7 +136,120 @@ Bitmap 本身十分大严重消耗内存，具体大小可以参考[这里](http
 
 [参考](http://www.gcssloop.com/customview/dispatch-touchevent-source)
 
+# AsyncTask + HttpClient 与 AsyncHttpClient 有什么区别？
 
+- AsyncHttpClient
+
+  是一个访问网络的库，封装了常用的网络访问请求，可以很方便的进行网络访问等，它的底层使用了 Netty。
+
+- AsyncTask + HttpClient
+
+  属于手动通过 AsyncTask 和 HttpClient 来实现网络访问，需要自己进行封装，使用麻烦。
+
+# LaunchMode 应用场景
+
+- singleTop 适合接收通知启动的内容显示页面，或者根据业务逻辑大量的重复性页面但一次性返回的。
+
+  比如知乎的客户端一段时间内推送了很多问题的回答，一个一个点开看的页面就使用 singleTop 实现。
+
+- singleTask  适合做为应用的入口点，防止被多次启动。
+
+- singleInstance 适合需要与程序分离开的页面。
+
+# AsyncTask 如何使用
+
+继承 AsyncTask ，实现四个方法
+
+- onPreExecute
+
+  该方法在 main 线程执行。执行了execute()方法后就会在UI线程上执行onPreExecute()方法，该方法在task真正执行前运行。
+- doInBackground
+
+  该方法在子线程中运行，用来执行耗时任务。
+- onProgressUpdate
+
+  该方法在 main 线程执行，用来回调项目的进度，这个方法可以多次被回调，在 doInBackground 中调用 publishProgress 方法可以触发此方法的回调。
+- onPostExecute
+
+  该方法在 main 线程中执行，doInBackground 的返回值在这个方法中会被返回。表示任务已经执行完了。
+
+然后调用 execute() 方法开始执行。
+
+[参考](https://blog.csdn.net/iispring/article/details/50639090)
+
+[工作原理](https://blog.csdn.net/iispring/article/details/50670388)
+
+# SpareArray 原理
+
+SpareArray 是纯属组的方式来存放数据。具有比 HashMap 更高的内存使用效率。
+SpareArray 初始长度为 10。
+
+SpareArray 内部有两个数组，一个数组用来存储KEY 一个用来存储 Values，key 都是 int 型的。
+
+put 操作：
+
+  - 存放 key 的数组是有序的（这也是为什么 key 是 int 型的原因）
+  - 通过二分查找找到当前 key 应该所在的位置（索引）
+  - 如果 key 冲突就直接覆盖 value
+  - 如果 key 不冲突但是当前的值为 DELETE 则覆盖 key 和 value
+  - 如果上面不能满足，则 gc 然后执行插入操作
+
+remove 操作：
+
+  - 根据 key 查找索引
+  - 如果查找到了就把当前的 value 置为 DELETED
+
+  不直接进行删除的原因，是为了减少频繁的数组压缩操作。
+
+
+[参考](https://juejin.im/entry/57c3e8c48ac24700634bd3cf)
+
+[参考](http://www.voidcn.com/article/p-zyywypiq-bnx.html)
+
+# 请介绍下 ContentProvider 是如何实现数据共享的
+
+程序通过实现 ContentProvider 的抽象接口把自己的数据暴露出去，外界通过 URI 来作为标志访问数据。底层通过 binder 来实现。
+
+# Android Service 与 Activity 之间通信的几种方式
+
+- 通过 binder
+- 通过广播接收者
+- 通过自定义回调
+
+- 直接使用静态内部类
+- 通过读写文件的方式
+
+# IntentService 原理及作用是什么？
+
+IntentService 继承自 service，但是内部通过将工作任务放在了子线程中执行，然后通过 handler 来实现数据回调。
+
+在 onCreate 方法中创建了工作线程 HandlerThread，并通过它的 looper 来创建了一个 handler。
+在 onStart 方法中分发消息，分发消息。
+
+ServiceHandler 接收到消息后会调用 onHandleIntent 方法，并且在 onHandleIntent 执行结束后执行 stopSelf 来结束自己。
+
+作用：执行耗时任务。
+
+# 说说 Activity、Intent、Service 是什么关系
+
+- activity 用来显示界面与用户交互
+- intent 作为 activity 和 service 的通讯
+- service 执行后台任务
+
+# ApplicationContext 和 ActivityContext 的区别
+
+- ApplicationContext 伴随着整个应用的生命周期，随着应用的开始而开始结束而结束
+- ActivityContext 伴随着 activity 的生命周期。
+
+# SP 是进程同步的吗?有什么方法做到同步？
+
+SharedPreferences 不是进程同步的。
+
+可以使用 MODE_MULTI_PROCESS 模式来保证同步，但是此模式已经废弃，而且官方说明中提到不能够保证此模式总是正确的。官方推荐使用 ContentProvier 来实现进程间的文件共享。
+
+[参考](https://www.jianshu.com/p/875d13458538)
+
+# 谈谈多线程在 Android 中的使用
 
 
 
