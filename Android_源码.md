@@ -1,3 +1,37 @@
+<!-- TOC -->
+
+- [Android 动画框架实现原理](#android-动画框架实现原理)
+- [Android 各个版本API的区别](#android-各个版本api的区别)
+- [Requestlayout，onlayout，onDraw，DrawChild区别与联系](#requestlayoutonlayoutondrawdrawchild区别与联系)
+- [invalidate 和 postInvalidate 的区别及使用](#invalidate-和-postinvalidate-的区别及使用)
+- [Activity-Window-View三者的差别](#activity-window-view三者的差别)
+- [谈谈对 Volley 的理解](#谈谈对-volley-的理解)
+- [如何优化自定义 View](#如何优化自定义-view)
+- [低版本SDK如何实现高版本api？](#低版本sdk如何实现高版本api)
+- [描述一次网络请求的流程](#描述一次网络请求的流程)
+- [HttpUrlConnection 和 okhttp关系](#httpurlconnection-和-okhttp关系)
+- [Bitmap 对象的理解](#bitmap-对象的理解)
+- [ActivityThread，AMS，WMS的工作原理](#activitythreadamswms的工作原理)
+- [自定义 View 如何考虑机型适配](#自定义-view-如何考虑机型适配)
+- [自定义View的事件](#自定义view的事件)
+- [AsyncTask + HttpClient 与 AsyncHttpClient 有什么区别？](#asynctask--httpclient-与-asynchttpclient-有什么区别)
+- [LaunchMode 应用场景](#launchmode-应用场景)
+- [AsyncTask 如何使用](#asynctask-如何使用)
+- [SpareArray 原理](#sparearray-原理)
+- [请介绍下 ContentProvider 是如何实现数据共享的](#请介绍下-contentprovider-是如何实现数据共享的)
+- [Android Service 与 Activity 之间通信的几种方式](#android-service-与-activity-之间通信的几种方式)
+- [IntentService 原理及作用是什么？](#intentservice-原理及作用是什么)
+- [说说 Activity、Intent、Service 是什么关系](#说说-activityintentservice-是什么关系)
+- [ApplicationContext 和 ActivityContext 的区别](#applicationcontext-和-activitycontext-的区别)
+- [SP 是进程同步的吗?有什么方法做到同步？](#sp-是进程同步的吗有什么方法做到同步)
+- [谈谈多线程在 Android 中的使用](#谈谈多线程在-android-中的使用)
+- [进程和 Application 的生命周期](#进程和-application-的生命周期)
+- [封装 View 的时候怎么知道 view 的大小](#封装-view-的时候怎么知道-view-的大小)
+- [RecycleView 原理](#recycleview-原理)
+- [AndroidManifest 的作用与理解](#androidmanifest-的作用与理解)
+
+<!-- /TOC -->
+
 # Android 动画框架实现原理
 
 Animation 框架定义了透明度，旋转，缩放和位移几种常见的动画，而且控制的是整个 View，实现原理是每次绘制视图时在 `View.draw(Canvas canvas, ViewGroup parent, long drawingTime)`方法中获取该 View 的 Animation 的 Transformation 值，然后调用 canvas.concat(transformToApply.getMatrix())，通过矩阵运算完成动画帧，如果动画没有完成，继续调用 invalidate() 函数，启动下次绘制来驱动动画，动画过程中的帧之间间隙时间是绘制函数所消耗的时间，可能会导致动画消耗比较多的 CPU 资源，最重要的是，动画改变的只是显示，并不能相应事件。
@@ -251,8 +285,62 @@ SharedPreferences 不是进程同步的。
 
 # 谈谈多线程在 Android 中的使用
 
+Android 中多线程都是在执行一些耗时任务。Android 中开启多线程的方法一般是：
+- new Thread
+- 线程池
+- AsnysTask
+- IntentService 在内部也是使用了子线程
 
+子线程与主线程之间的通讯主要通过 Handler 来实现，AsnysTask 内部也是封装了 handler。
 
+Android 中频繁的创建和释放线程是一个比较消耗资源的事情，因此建议使用线程池来管理线程。
 
+另外在使用过程中要注意线程安全问题。
 
+# 进程和 Application 的生命周期
 
+Application 的生命周期相当于整个应用的生命周期，但是进程略微不同，一般来说一个应用就是一个进程，这个时候两者的生命周期时一样的。
+
+在多进程应用中，一些后台进程可能会被系统以外的结束掉，这个时候两者的生命周期就不同了。
+
+# 封装 View 的时候怎么知道 view 的大小
+
+重写 onMeasure() 方法，通过 MeasureSpec 的 getMode 和 getSize 来获取宽高的模式和值。MeasureSpec 的来源是父View，一级级向上最终可以跟踪到跟View。
+
+# RecycleView 原理
+
+- 绘制流程
+
+  RecyclerView将它的measure与layout过程委托给了RecyclerView.LayoutManager来处理，并且，它对子控件的measure及layout过程是逐个处理的，也就是说，执行完成一个子控件的measure及layout过程再去执行下一个。
+
+  在RecyclerView的measure及layout阶段，填充ItemView的算法为：向父容器增加子控件，测量子控件大小，布局子控件，布局锚点向当前布局方向平移子控件大小，重复上诉步骤至RecyclerView可绘制空间消耗完毕或子控件已全部填充。 可绘制控件的大小就是RecycleView 的父容器大小。
+
+  RecyclerView的draw过程可以分为２部分来看：RecyclerView负责绘制所有decoration；ItemView的绘制由ViewGroup处理，这里的绘制是android常规绘制逻辑。
+- 滑动流程
+
+  RecyclerView的滑动过程可以分为2个阶段：手指在屏幕上移动，使RecyclerView滑动的过程，可以称为scroll；手指离开屏幕，RecyclerView继续滑动一段距离的过程，可以称为fling。
+
+  scroll 相对简单，它先判断手指移动的距离与阈值之间的关系，然后调用方法使 RecyclerView 进行滑动。当接收到ACTION_UP事件时，会根据之前的滑动距离与时间计算出一个初速度yvel，再以此初速度调用 fling。最终他们都是通过LayoutManager.scrollBy()方法完成滑动。
+
+- 重用 itemView
+
+  Recycler的作用就是重用ItemView。在填充ItemView的时候，ItemView是从它获取的；滑出屏幕的ItemView是由它回收的。对于不同状态的ItemView存储在了不同的集合中，比如有scrapped、cached、exCached、recycled，当然这些集合并不是都定义在同一个类里。 
+
+[Android RecyclerView工作原理分析（上）](https://blog.csdn.net/xyh269/article/details/53047855)
+
+# AndroidManifest 的作用与理解
+
+清单文件提供了一个应用程序运行的所需要的必要信息，即在该应用程序的任何代码运行之前系统所必须拥有的信息。
+
+- 提供软件包名
+- 描述各个应用组件
+  - 主题
+  - 键盘适配
+  - activity 启动模式等
+- 声明权限
+- 指定版本号和版本名
+- 指定应用所需要的设备，google paly 可以根据提供的内容过滤掉不符合需求的设备。
+- 指定应用入口，图标，应用名等。
+- 指定应用的主题
+
+不过现在有些内容会被 gralde 中指定的替换掉，例如版本号、软件包名等。

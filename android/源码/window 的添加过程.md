@@ -10,7 +10,7 @@ WindowManager 是一个接口，并且继承自 ViewManager。
 public interface ViewManager{
     public void addView(View view, ViewGroup.LayoutParams params);
     public void updateViewLayout(View view, ViewGroup.LayoutParams params);
-    public void removeView(View view);
+    public void removeView(View vaiew);
 }
 ```
 
