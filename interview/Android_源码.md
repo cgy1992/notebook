@@ -1,9 +1,9 @@
 <!-- TOC -->
 
-- [Android 动画框架实现原理](#android-动画框架实现原理)
-- [Android 各个版本API的区别](#android-各个版本api的区别)
+- [Android动画框架实现原理](#android动画框架实现原理)
+- [Android各个版本API的区别](#android各个版本api的区别)
 - [Requestlayout，onlayout，onDraw，DrawChild区别与联系](#requestlayoutonlayoutondrawdrawchild区别与联系)
-- [invalidate 和 postInvalidate 的区别及使用](#invalidate-和-postinvalidate-的区别及使用)
+- [invalidate和postInvalidate的区别及使用](#invalidate和postinvalidate的区别及使用)
 - [Activity-Window-View三者的差别](#activity-window-view三者的差别)
 - [谈谈对 Volley 的理解](#谈谈对-volley-的理解)
 - [如何优化自定义 View](#如何优化自定义-view)
@@ -24,19 +24,20 @@
 - [说说 Activity、Intent、Service 是什么关系](#说说-activityintentservice-是什么关系)
 - [ApplicationContext 和 ActivityContext 的区别](#applicationcontext-和-activitycontext-的区别)
 - [SP 是进程同步的吗?有什么方法做到同步？](#sp-是进程同步的吗有什么方法做到同步)
-- [谈谈多线程在 Android 中的使用](#谈谈多线程在-android-中的使用)
+- [谈谈多线程在Android中的使用](#谈谈多线程在android中的使用)
 - [进程和 Application 的生命周期](#进程和-application-的生命周期)
 - [封装 View 的时候怎么知道 view 的大小](#封装-view-的时候怎么知道-view-的大小)
 - [RecycleView 原理](#recycleview-原理)
 - [AndroidManifest 的作用与理解](#androidmanifest-的作用与理解)
+- [scrollView 的原理](#scrollview-的原理)
 
 <!-- /TOC -->
 
-# Android 动画框架实现原理
+# Android动画框架实现原理
 
 Animation 框架定义了透明度，旋转，缩放和位移几种常见的动画，而且控制的是整个 View，实现原理是每次绘制视图时在 `View.draw(Canvas canvas, ViewGroup parent, long drawingTime)`方法中获取该 View 的 Animation 的 Transformation 值，然后调用 canvas.concat(transformToApply.getMatrix())，通过矩阵运算完成动画帧，如果动画没有完成，继续调用 invalidate() 函数，启动下次绘制来驱动动画，动画过程中的帧之间间隙时间是绘制函数所消耗的时间，可能会导致动画消耗比较多的 CPU 资源，最重要的是，动画改变的只是显示，并不能相应事件。
 
-# Android 各个版本API的区别
+# Android各个版本API的区别
 
 只说些主要的:
 - 4.4
@@ -94,7 +95,7 @@ Animation 框架定义了透明度，旋转，缩放和位移几种常见的动�
 
   DrawChild 会去回调没一个子视图的 draw 方法
 
-# invalidate 和 postInvalidate 的区别及使用
+# invalidate和postInvalidate的区别及使用
 
 都是用来刷新界面的，不同的是 invalidate 不能在工作线程中使用，只能在主线程中使用， postInvalidate 可以在工作线程中使用。
 # Activity-Window-View三者的差别
@@ -283,7 +284,8 @@ SharedPreferences 不是进程同步的。
 
 [参考](https://www.jianshu.com/p/875d13458538)
 
-# 谈谈多线程在 Android 中的使用
+
+# 谈谈多线程在Android中的使用
 
 Android 中多线程都是在执行一些耗时任务。Android 中开启多线程的方法一般是：
 - new Thread
@@ -344,3 +346,6 @@ Application 的生命周期相当于整个应用的生命周期，但是进程�
 - 指定应用的主题
 
 不过现在有些内容会被 gralde 中指定的替换掉，例如版本号、软件包名等。
+
+# scrollView 的原理
+
