@@ -1,4 +1,10 @@
+<!-- TOC -->
 
+- [slingTop模式](#slingtop模式)
+- [slingTask模式](#slingtask模式)
+- [slingInstance模式](#slinginstance模式)
+
+<!-- /TOC -->
 
 ## slingTop模式
 
@@ -37,13 +43,9 @@
 
 ![M-S-T-S](http://orzoelfvh.bkt.clouddn.com/startActivityForResult%E5%90%AF%E5%8A%A82.png?attname=&e=1500479686&token=cs2nCfx72Y7hW0_NpFYzb3Jab90IJWraRtphMd-q:HRac2_YxoTCifBMuljrfc47LOUE)
 
-
-
 如果原本就在栈顶，则生命周期执行顺序 onPause--onNewIntent--onResume.
 
 如果原本不在栈顶，则生命周期顺序 onNewIntent--onRestart--onStart--onResume.
-
-
 
 ## slingInstance模式
 
@@ -154,12 +156,3 @@
 可以看到t66任务栈中存在一个 MainActivity 以及两个 ThirdActivity ， SecondActivity 同样在单独的任务栈中
 
 - 4、如果此时再从 ThirdActivity 中启动 SecondActivity ，此时如果按返回键，会回到 ThirdActivity 中，再返回还是 ThirdActivity 中，再次返回是 MainActivity 再次返回退出应用，因为如第三步所说 ThirdActivity 在任务栈中存在了两个。
-
-
-
-
-
-
-
-
-
