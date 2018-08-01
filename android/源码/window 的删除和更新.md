@@ -2,7 +2,7 @@ window 的删除和更新过程是和添加类似的，分析了添加的过程�
 
 # 删除
 
-和添加一样，也是通过 WindowManagerImpl，然后在委托给 WindowManagerGlobal的removeView方法实现。
+和添加一样，也是通过 WindowManagerImpl，然后在委托给 WindowManagerGlobal 的 removeView 方法实现。
 
 WindowManagerImpl 提供了两种删除 view 的方法，分别为同步和异步：
 
@@ -131,7 +131,7 @@ removeViewLocked 方法也非常简单，可以看到它调用了当前 view 对
     }
 ```
 
-在 doDie 中也没有完成真正的删除操作，而是调用了 ViewRootImpl.dispatchDetachedFromWindow 方法并且最终调用了 WindowManagerGlobal 的 doRemoveView方法。
+在 doDie 中也没有完成真正的删除操作，而是调用了 ViewRootImpl.dispatchDetachedFromWindow 方法并且最终调用了 WindowManagerGlobal 的 doRemoveView 方法。
 
 先查看 dispatchDetachedFromWindow：
 
@@ -188,3 +188,7 @@ removeViewLocked 方法也非常简单，可以看到它调用了当前 view 对
 ```
 
 在 doRemoveView 方法中清除了和要删除的 view 相关的一切数据。
+
+至此 window删除 的删除过程就全部完成，也很简单，用一个图来简单表示：
+
+![window删除](http://blogqn.maintel.cn/window删除view的过程.png?e=3108646682&token=kDSqSAyKGaf8JcHprWP7S4W3hGuz8kDIEhzAufWH:PMi8HPns6kcHnYze1rvLv436uzo=)
