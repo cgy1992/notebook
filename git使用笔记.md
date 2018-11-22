@@ -73,3 +73,18 @@
 # 放弃合并
 
 如果合并以后未进行提交，则这个时候分支是处于中间状态，直接执行命令：`git merge --abort` 就可以撤销了。
+
+
+# push 的时候出现 change-id message
+
+可以根据命令行中给出的提示
+```
+ gitdir=$(git rev-parse --git-dir); scp -p -P 29418 jieyu.chen@gerrit.17zuoye.net:hooks/commit-msg ${gitdir}/hooks/
+```
+
+执行命令
+
+然后如果是最后一次提交，则执行`git commit --amend` 在打开的 vim 编辑器中不做任何修改即可，直接`:wq`退出，然后再次查看 `git log` 看看是否补上了。
+
+
+https://blog.csdn.net/liuxu0703/article/details/54343096
