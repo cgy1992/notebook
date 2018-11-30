@@ -88,3 +88,6 @@
 
 
 https://blog.csdn.net/liuxu0703/article/details/54343096
+
+
+gitdir=$(git rev-parse --git-dir); scp -p -P 29418 jieyu.chen@gerrit.17zuoye.net:hooks/commit-msg ${gitdir}/hooks/

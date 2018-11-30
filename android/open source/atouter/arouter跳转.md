@@ -163,7 +163,7 @@ class JsonServiceImpl : SerializationService {
 }
 ```
 
-值得注意的是，这个序列化器只能创建一个，创建多个是没用的，即使他们的组名不一样，具体可以参考它生成的 ARouter$$Providers$$app 类：
+值得注意的是，这个序列化器只能创建一个，创建多个是没用的，意思就是没办法指定具体使用什么序列化器来执行序列化，即使他们的组名不一样，具体可以参考它生成的 ARouter$$Providers$$app 类：
 
 ```java
 public class ARouter$$Providers$$app implements IProviderGroup {

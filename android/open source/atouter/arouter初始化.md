@@ -169,7 +169,28 @@ public static Set<String> getFileNameByPackageName(Context context, final String
 
 根据以上代码可以知道，它会扫描 dex 包，并从dex 包中扫描出符合 arouter 包名的类，添加到集合当中并返回。
 
-再然后通过 反射的方法创建出这些类，并调用它的 loadInto 方法，把路由映射表保存到内存当中。其实是保存在了 Warehouse 中。这个类如下：
+再然后通过 反射的方法创建出这些类，并调用它的 loadInto 方法，把路由映射表保存到内存当中。
+```java
+        for (String className : routerMap) {
+              if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
+             // 通过反射将映射表组保存到内存中
+           ((IRouteRoot) (Class.forName(className).getConstructor().newInstance())).loadInto(Warehouse.groupsIndex);
+          } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_INTERCEPTORS)) {
+             // 把拦截器加载到内存中
+             ((IInterceptorGroup) (Class.forName(className).getConstructor().newInstance())).loadInto(Warehouse.interceptorsIndex);
+            } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_PROVIDERS)) {
+            // 把服务类加载到内存中
+             ((IProviderGroup) (Class.forName(className).getConstructor().newInstance())).loadInto(Warehouse.providersIndex);
+             }
+     }
+```
+根据上面的代码可以知道，在初始化的时候都分别加载了这些类
+
+- 保存各个路由组关系的类
+- 拦截器被加载到内存中
+- 保存各个服务的路由关系的类
+
+其实是保存在了 Warehouse 中。这个类如下：
 
 都是一些全局的 map。
 
@@ -198,7 +219,7 @@ class Warehouse {
 }
 ```
 
-再根据最前面的 ARouter$$Root$$app 类的 loadInto 方法
+再根据最前面的 `ARouter$$Root$$app` 类的 loadInto 方法
 
 ```java
   @Override
@@ -207,7 +228,7 @@ class Warehouse {
   }
 ```
 
-它确实把路由映射表按照组的方式保存到了内存当中。
+它确实把路由映射表按照组的方式保存到了内存当中。需要注意的是，这里只是把某一组的路由映射关系保存到了内存中，因为`ARouter$$Group$$main`中才实际保存了一组 activity 的路由映射关系。而他们的映射关系是在第一个路径被访问的时候才加载到内存中的，这个就是 ARouter 的按需加载机制了。
 
 
 在以上初始化完成以后
