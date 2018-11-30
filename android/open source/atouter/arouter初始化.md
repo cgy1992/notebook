@@ -1,23 +1,9 @@
-对于正常配置后的经过编译会在 app/build/generated/source/kapt/debug/包名 下生成至少三个类，分别为：
 
-`ARouter$$Group$$组名`
+> 本篇主要介绍 ARouter 的初始化过程。
 
-存储某一组的路由映射
+# 初始化
 
-`ARouter$$Providers$$app`
-`ARouter$$Root$$app`
-
-用于初始化，将路由按组存储到一个 map 中。
-
-上面这一些类是在编译过程中生成的。
-
-
-
-
-应用打开时的初始化过程
-
-
-在 application 中注册初始化
+一般建议在应用打开时的初始化过程即在 application 中进行初始化工作。同时如果是在开发的情况下最好打开 log 和 debug 开关。
 
 ```kotlin
         if (BuildConfig.DEBUG) {
@@ -26,62 +12,67 @@
         }
         ARouter.init(this)
 ```
-ARouter.init(this) 是一个单例。如果没有初始化则进行初始化。
+
+ARouter.init(this) 是一个单例。它把初始化以及初始化后的工作都交给了 `_ARouter` 来做。
 
 ```java
+    // class ARouter
     public static void init(Application application) {
         if (!hasInit) {
             logger = _ARouter.logger;
-            _ARouter.logger.info(Consts.TAG, "ARouter init start.");
             hasInit = _ARouter.init(application);
-
             if (hasInit) {
                 _ARouter.afterInit();
             }
-
-            _ARouter.logger.info(Consts.TAG, "ARouter init over.");
         }
     }
-```
-`_ARouter.init(application);` 方法进行初始化
-
-```java
+    // class _ARouter
     protected static synchronized boolean init(Application application) {
         mContext = application;
         LogisticsCenter.init(mContext, executor);
-        logger.info(Consts.TAG, "ARouter init success!");
         hasInit = true;
         mHandler = new Handler(Looper.getMainLooper());
-
         return true;
     }
 ```
 
-关键方法是`LogisticsCenter.init(mContext, executor);` 这个方法扫描所有路由的映射关系，并将它们保存到内存中来。
+在 `_ARouter.init` 把初始化工作交给了 `LogisticsCenter.init` 来做，同时自己初始化了一个 handler。
+
+# LogisticsCenter.init
+
+在 ARouter 中 `LogisticsCenter` 是一个很关键的类，几乎所有的工作最终都是由它来做。
+
+其中 `init` 方法是扫描所有路由的映射关系，并将它们保存到内存中来。下面是它的部分关键代码：
 
 ```java
-                // 如果是debug 或者升级了版本，则每次重新进行扫描
+    public synchronized static void init(Context context, ThreadPoolExecutor tpe) throws HandlerException {
+        try {
+            ...
+            if (registerByPlugin) { // 一般这里就是 false ，除非是使用 ARouter 提供的插件自动设置路由的。
+                logger.info(TAG, "Load router map by arouter-auto-register plugin.");
+            } else {
+                Set<String> routerMap;
+
+                // 如果是 debug 或者升级了新版本，则扫描路由
+                // 这也是为什么我们要在开发状态下打开 debug 开关的原因
                 if (ARouter.debuggable() || PackageUtils.isNewVersion(context)) {
-                    logger.info(TAG, "Run with debug mode or new install, rebuild router map.");
-                    // 读取映射表
+                    // 扫描 dex 包，找出所有路由
                     routerMap = ClassUtils.getFileNameByPackageName(mContext, ROUTE_ROOT_PAKCAGE);
                     if (!routerMap.isEmpty()) {
+                        // 缓存路由
                         context.getSharedPreferences(AROUTER_SP_CACHE_KEY, Context.MODE_PRIVATE).edit().putStringSet(AROUTER_SP_KEY_MAP, routerMap).apply();
                     }
-
-                    PackageUtils.updateVersion(context);    // Save new version name when router map update finishes.
+                    // 保存版本
+                    PackageUtils.updateVersion(context);  
                 } else {
-                    logger.info(TAG, "Load router map from cache.");
-                    // 否则从cache 中读取
+                    // 从缓存中读取
                     routerMap = new HashSet<>(context.getSharedPreferences(AROUTER_SP_CACHE_KEY, Context.MODE_PRIVATE).getStringSet(AROUTER_SP_KEY_MAP, new HashSet<String>()));
                 }
 
-                logger.info(TAG, "Find router map finished, map size = " + routerMap.size() + ", cost " + (System.currentTimeMillis() - startInit) + " ms.");
-                startInit = System.currentTimeMillis();
-
+                
                 for (String className : routerMap) {
                     if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
-                        // 通过反射将映射表保存到内存中来
+                        // This one of root elements, load root.
                         ((IRouteRoot) (Class.forName(className).getConstructor().newInstance())).loadInto(Warehouse.groupsIndex);
                     } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_INTERCEPTORS)) {
                         // Load interceptorMeta
@@ -102,6 +93,10 @@ ARouter.init(this) 是一个单例。如果没有初始化则进行初始化。
             if (ARouter.debuggable()) {
                 logger.debug(TAG, String.format(Locale.getDefault(), "LogisticsCenter has already been loaded, GroupIndex[%d], InterceptorIndex[%d], ProviderIndex[%d]", Warehouse.groupsIndex.size(), Warehouse.interceptorsIndex.size(), Warehouse.providersIndex.size()));
             }
+        } catch (Exception e) {
+            throw new HandlerException(TAG + "ARouter init logistics center exception! [" + e.getMessage() + "]");
+        }
+    }
 ```
 
 
@@ -245,3 +240,20 @@ if (hasInit) {
 ```
 
 初始化了拦截器`com.alibaba.android.arouter.core.InterceptorServiceImpl`
+
+
+
+对于正常配置后的经过编译会在 app/build/generated/source/kapt/debug/包名 下生成至少三个类，分别为：
+
+`ARouter$$Group$$组名`
+
+存储某一组的路由映射
+
+`ARouter$$Providers$$app`
+`ARouter$$Root$$app`
+
+用于初始化，将路由按组存储到一个 map 中。
+
+上面这一些类是在编译过程中生成的。
+
+
