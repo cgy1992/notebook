@@ -32,7 +32,7 @@ printNumber(num aNumber){
     this num is 3
     this num is 4    
 
-## 变量
+# 变量
 
 变量在声明的时候可以指定类型也可以不指定类型，比如上面的 for 循环也可以把 var 改成 int 或 num。
 
@@ -59,3 +59,80 @@ String name = 'Bob';
 在编译时不会出错，但是运行时就出错了。
 
 或者说 dynamic 是没有类型的， object 实际是有类型的它就是  object 类型，单 dynamic 是没有任何类型的或者说 dart 中没有任何对象能满足你想要的？慎用！
+
+**默认值**：在 dart 一切变量在未被赋值的时候都是 null，即使是 int 型的初始值也是 null，因为 dart 一切皆对象。
+
+## final 和 const
+
+两者都表示常量，但是const 是一个编译期常量，final 在他第一次被调用的时候初始化。
+
+const 要是定义在类的内部，则需要加上 static 修饰符。
+
+
+# 基本类型
+
+- numbers
+- strings
+- booleans
+- lists
+- maps
+- runes
+- symbols
+
+
+## numbers
+
+numbers 有两种类型
+
+- int
+
+  表达不大于64位的整数，-2^63 ~ 2^63 -1
+
+- double
+  
+  表示 64 位浮点数
+
+两种类型都可以使用 num 来定义，因为他们都是 num 的子类型。
+
+```dart
+num age = 0;
+```
+
+dart 还支持使用科学计数法来表示:
+
+```dart
+// 表示 2.14的10次方
+var nums = 3.14e10;
+```
+
+dart 也给提供了一些转换的方法：
+
+```dart
+var one = int.parse("10");
+// var one = int.parse("10.1"); 这样会出错的
+var oneString = 1.toString();
+// 保留两位小数，并转换成字符串  3.14
+var pi = 3.1415926.toStringAsFixed(2);
+...
+```
+
+## String
+
+Dart 的 string 是 utf-16 字符集的。使用起来和 java 以及 kotlin 类似，特别是 kotlin。
+
+**==** 在 dart 中比较的是两个字符串的内容是否相同。
+
+```dart
+// 这是不是和 kotlin 一模一样，支持使用 $ 来拼接字段，或者表达式
+var testStr = "this is $testString ${testString.toUpperCase()}test";
+
+
+// dart 可以支持换行时不写 +
+var testString = "this"
+                "is"
+                "test string";
+// 支持使用 三个单引号或者双引号 中间的字符串会原封不动的被打印出来，（包括换行和空格）
+// 包括字符串中的 单 双引号等都不需要转义了。但是 \ 还是需要的
+var str = """this is String \\ "" ''
+            this is String""";
+```
