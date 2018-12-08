@@ -68,6 +68,17 @@ String name = 'Bob';
 
 const 要是定义在类的内部，则需要加上 static 修饰符。
 
+可以使用下面的方式定义一个变量:
+
+```dart
+  var foo = const [1,2,3,4,5,6,7,8];
+  //  foo[1] = 10;   foo 不能被修改
+  // 即使用 cosnt 初始化了一个变量，它一样可以被重新赋值
+  foo = [1,2,3,4];
+  foo = [4,5,6,7,5];
+  foo[1] = 10; // 被重新赋值以后 就可以被修改了
+```
+
 
 # 基本类型
 
@@ -135,4 +146,26 @@ var testString = "this"
 // 包括字符串中的 单 双引号等都不需要转义了。但是 \ 还是需要的
 var str = """this is String \\ "" ''
             this is String""";
+
+// 支持使用一个 r 表示真正的字符串 里面的任何字符都不需要转义，但是这个时候 单引号 会出问题？
+var rawStr = r'"test /\n ${/''}"';
+
 ```
+
+## boolean
+
+和 java 以及 kotlin 并无区别
+
+## Lists
+
+和 kotlin 并无太大区别，下标也是从 0 开始。
+
+dart 能够自动推断 list 的类型：
+
+```dart
+var intList = [1,2,3,4]; // 这种情况下自动推断城 list<int> 型
+
+var testList = [1,2,3,"string"]; // 这种情况下 自动推断成 List 型 可以add 任
+```
+
+List 给了一系列的操作方法[文档](https://api.dartlang.org/stable/2.1.0/dart-core/List-class.html)
