@@ -169,3 +169,81 @@ var testList = [1,2,3,"string"]; // 这种情况下 自动推断成 List 型 可
 ```
 
 List 给了一系列的操作方法[文档](https://api.dartlang.org/stable/2.1.0/dart-core/List-class.html)
+
+## maps
+
+map 的使用和语法与 kotlin 并无太大区别。
+
+```dart
+  // 一样支持自动推断类型
+  // 包括赋值的方法，比 kotlin 还要简单一些
+  var map = {1:"test","aa":String};
+  map["booleanKey"] = true;
+  map.forEach((key,value){
+    print("key::$key   value:$value");
+  });
+```
+
+## Runes
+
+UTF-32 字符串，因为 dart 的字符串是 UTF-16 型的，所以要表示 Unicode 字符串就需要使用 runes。
+
+```dart
+var clapping = '\u{1f44f}';
+  print(clapping); //👏
+  print(clapping.codeUnits);  //[55357, 56399]
+  print(clapping.runes.toList()); //[128079]
+
+  Runes input = new Runes(
+      '\u2665  \u{1f605}  \u{1f60e}  \u{1f47b}  \u{1f596}  \u{1f44d}');
+  print(new String.fromCharCodes(input));//♥  😅  😎  👻  🖖  👍
+```
+
+# 函数
+
+在 dart 中函数也是一个对象，可以把函数作为一个参数传递给其他方法。也可以把 dart 类的实例当做一个函数来调用。
+
+```dart
+bool isString(Object obj){
+  return obj is String;
+}
+
+isString2(Object obj){
+  return obj is String;
+}
+
+isString3(Object obj) => obj is String;
+```
+
+- 上面三种写法效果一样
+- 可以指定具体类型的返回，也可以不指定，dart 会自动推断
+- 如果函数体内部只有一个表达式，则可以使用 => 来替代函数体，而且 => 后面只能有一个表达式
+
+
+
+# 导入包
+
+如果是本地的就直接 import 就可以了。
+
+`import './dartTest.dart';`
+
+导入网上的库：
+
+在 `pubspec.yaml` 中添加依赖，然后导入即可。
+
+如果没有 `pubspec.yaml` 则新建一个：
+
+```yaml
+# name 是必须的
+name: dartTest
+
+# 添加依赖
+dependencies:
+  meta: ^1.1.6
+```
+
+然后引入就可以了
+
+`import 'package:meta/meta.dart';`
+
+如果还没有安装上，就执行一次 `pub get` （flutter 中执行`flutter packages get`）
