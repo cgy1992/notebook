@@ -309,6 +309,15 @@ Function makeAdder(num addBy) {
 
 上面的那一段代码也就体现了闭包。
 
+```dart
+  //  因为是闭包，以及完全的面向对象特性，所以有这样的神奇写法
+  var callbacks = [];
+  for (var i = 0; i < 2; i++) {
+    callbacks.add(() => print(i));
+  }
+  callbacks.forEach((c) => c());
+```
+
 ## 返回值
 
 所有的函数都有默认值，即使下面的函数。未指定返回值的函数会自动返回 null。
