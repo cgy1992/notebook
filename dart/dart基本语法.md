@@ -219,32 +219,23 @@ isString3(Object obj) => obj is String;
 - 可以指定具体类型的返回，也可以不指定，dart 会自动推断
 - 如果函数体内部只有一个表达式，则可以使用 => 来替代函数体，而且 => 后面只能有一个表达式
 
-## 指定参数名
-
-```dart
-/**
- * 指定参数名，这样在调用的时候不用关注顺序，但是必须指定参数名。
-  enableFlags(hidden:false,bold:true);
- * 
- * 使用指定参数名，可以在复杂函数下使代码更易读
- * 
- */
-enableFlags({bool bold, bool hidden}){
-  print("bold::$bold  hidden::$hidden");
-}
-```
 
 ## 可选参数以及默认值
 
+在 dart 中一个函数的参数只用 `{}` 或者 `[]` 包含表示他们里面的参数是可选的，在使用过程中即使不传递值也能正常运行。
+
+两者也有区别，具体看下面的说明：
+
 ```dart
 
 /**
- * 在指定参数名时可以使用使用 required 来标识当前参数是可选的
+ * 在指定参数名时可以使用使用 required 来标识当前参数是必须的（不过需要注
+ * 的是，即使标注了是必须的参数也在不传的情况下编译器也只是会报警告而不是报错）
  * 
  * @required 包含在 meta 库中，在 dart 需要引入`package:meta/meta.dart`
  * 在 fluter 中需要引入 `package:flutter/material.dart`
  * 
- * 同时也可以指定默认值，当指定默认值的时候，这个参数一样可以不传  testRequired();
+ * 同时也可以指定默认值，比如下面的 name 参数
  * 当参数名被指定的时候，任何参数都能指定默认值
  * 
  */
@@ -253,16 +244,41 @@ testRequired({String name = "laowang", @required int age}){
 }
 
 /**
- * 不使用指定参数名时，
- * 也可以使用 `[]` 来标记一个参数是可选的，但是这个时候就不能放到 `{}` 中了
+ * 使用 `{}` 包裹的参数在调用的时候必须指定参数名，但是可以不用关心参数的顺序:
+ * 比如 testRequired 的调用
+ * testRequired(age:100,name:"maintel");
+ * 下面使用 `[]` 包裹的参数在调用时也是可以忽略的，但是必须按照顺序调用，不能指定参数名
+ * 比如 testRequired2 调用
+ * testRequired2("name name",10,"test");
  * 
- * 如果不指定参数名的时候，只有在 `[]` 即可选参数的时候给指定默认值，比如下面的 interests 参数
+ * 可选参数可以在调用的时候只传递其中的某一个值：
+ * testRequired(age:100)
+ */
+
+
+/**
+ * 不使用指定参数名时，
+ * 也可以使用 `[]` 来标记一个参数是可选的，
+ * 
  */
 testRequired2(String name, [int age, String interests = "book"]){
   print("name::$name   age::$age");
 }
 
+/**
+  * 只有在 `[]` 或者 `{}` 包裹的参数才可以指定默认值比如下面的代码就是错误的
+  */
+testRequired3(String name = "test"){
+  print("name::$name");
+}
 
+
+/**
+ * 默认参数支持很多类型，如果是一个 lsit 或者 map 必须指定成 cosnt 的。
+ * 这个时候需要注意的是，const 型的实例是不能被修改的，所以使用时涉及到修改时需要谨慎
+ * doStuff();   这样调用报错运行会报错
+ * doStuff(list:[3,6,9]); 这样不会报错
+ */
 doStuff({
   List<int> list = const [1,2,3]
 }){
@@ -320,7 +336,7 @@ Function makeAdder(num addBy) {
 
 ## 返回值
 
-所有的函数都有默认值，即使下面的函数。未指定返回值的函数会自动返回 null。
+所有的函数都有返回默认值，即使下面的函数。未指定返回值的函数会自动返回 null。
 
 ```dart
 funTest(){}

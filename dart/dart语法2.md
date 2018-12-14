@@ -57,6 +57,15 @@ class Test{
   print(boolean ?? "test"); // boolean为空所以输出 test
 ```
 
+## ==
+
+```dart
+/**
+ * `==` 操作符，其实是一个方法，甚至可以被重写
+ * 当使用它的时候其实是调用了`x==y` 其实就是 `x.==(y)`
+ */
+```
+
 # 控制流
 
 和 kotlin 并区别，`if else`,`for`,`for in`,`while` 等都一样。

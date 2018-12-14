@@ -102,3 +102,59 @@ class Employee extends Person {
 
 ## 初始化成员列表
 
+可以直接通过跟在一个 ： 后面来初始化变量。。。但是感觉和写在构造函数中并无区别。
+
+区别就是在于初始化列表是在构造函数的 `{}` 中的内容执行前执行的。
+
+```dart
+  InitializerTest(x,y)
+      : x = x,
+        y = y,
+        sum = x + y {
+            // do something
+        }
+```
+
+## 构造函数重定向
+
+```dart
+  // 重定向构造函数
+  InitializerTest.newInstance(x) : this(x,10);
+
+  ```
+
+## 常量类
+
+如果确定一个类中的数据不会发生变化，可以定义一个常量类，构造函数使用 `const` 来标记。
+
+```dart
+class TestCosnt {
+
+  //常量类中的变量必须都是 final 的
+  final String data;
+
+  final String name;
+  final int age;
+
+  /**
+   * 当使用 cosnt 标记一个构造函数是，它类似于java的单例
+   * 而且这个时候这个类中的变量都应该是 fianl 的
+   */
+  const TestCosnt(this.data,{
+    this.name = "laowang",
+    this.age = 10
+  });
+}
+```
+
+当初始化两个相同的常量类的时候，他们两个是相同的，是同一个对象
+
+```dart
+  var testConst = const TestCosnt("testConst");
+  var testConst2  = const TestCosnt("testConst 2222");
+  var testConst3  = const TestCosnt("testConst");
+
+  print(testConst == testConst2);  // false
+  print(testConst == testConst3);  // true
+  print(identical(testConst, testConst3)); // true
+```
