@@ -49,7 +49,9 @@ class Test3{
 }
 ```
 
-## 继承
+## 构造函数
+
+### 继承
 
 初始化顺序，
 
@@ -100,7 +102,7 @@ class Employee extends Person {
 
 - 如果父类为空实现，那么就不需要调用父类的任何方法，当然也无方法可调。
 
-## 初始化成员列表
+### 初始化成员列表
 
 可以直接通过跟在一个 ： 后面来初始化变量。。。但是感觉和写在构造函数中并无区别。
 
@@ -115,7 +117,7 @@ class Employee extends Person {
         }
 ```
 
-## 构造函数重定向
+### 构造函数重定向
 
 ```dart
   // 重定向构造函数
@@ -123,7 +125,7 @@ class Employee extends Person {
 
   ```
 
-## 常量类
+### 常量
 
 如果确定一个类中的数据不会发生变化，可以定义一个常量类，构造函数使用 `const` 来标记。
 
@@ -158,3 +160,103 @@ class TestCosnt {
   print(testConst == testConst3);  // true
   print(identical(testConst, testConst3)); // true
 ```
+
+### 工厂构造函数
+
+Dart 中有一个关键字 factory，可以用来替代默认的构造函数，做一些缓存什么的。比如下面这个：
+
+```dart
+class Logger {
+  final String name;
+  bool isDebug = true;
+
+  static final Map<String, Logger> _cache = <String, Logger>{};
+
+  factory Logger(String name){
+      if(_cache.containsKey(name)){
+        return _cache[name];
+      } else {
+        final logger = Logger._internal(name);
+        _cache[name] = logger;
+        return logger;
+      }
+  }
+
+  void log(String msg){
+    if(isDebug) {
+      print(msg);
+    }
+  }
+
+  Logger._internal(this.name);
+}
+
+// 调用起来并没有什么不同
+
+Logger("name").log("teaadad");
+
+```
+
+factory 用来替代默认的构造函数，它使用起来和默认构造函数没有区别，但是在函数内部和构造函数是有区别的：
+
+- 它有返回值
+- 内部不能使用 this 关键字
+
+### 单例类
+
+可以用上面的 factory 来写单例:
+
+```dart
+class SingleClass {
+
+  factory SingleClass() {
+    return _getInstance();
+  }
+
+  static SingleClass _instance;
+
+  SingleClass._new(){
+
+  }
+
+  static SingleClass _getInstance(){
+    if(_instance == null){
+      _instance = new SingleClass._new();
+    }
+    return _instance;
+  }
+
+}
+```
+
+# 方法
+
+## 抽象方法和抽象类
+
+使用上和 java 并无区别，都是使用 abstract 关键字。
+
+有一个要注意的就是，可以使用 factory 关键字使 抽象类看起来是可以被实例化的：
+
+```dart
+abstract class AbstractFactoryClass {
+  void test();
+  factory AbstractFactoryClass(){
+    // 即使这里写了构造方法，直接报错，因为给它 factory 以后也只是看起来能被实例化而已
+    // return AbstractFactoryClass._internal();
+  }
+
+  AbstractFactoryClass._internal();
+
+  void log(){
+    print("this is abstract class");
+  }
+}
+
+// 调用
+  var abstracts = AbstractFactoryClass();
+
+  // abstracts.log(); // 运行报错
+```
+
+比如上面的代码，看起来没什么问题，运行的时候就报错了。所以 使用 factory 关键字也只是使抽象来看起来能被实例化一样，实际上并不能被实例化。。。
+

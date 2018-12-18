@@ -78,7 +78,28 @@ const 要是定义在类的内部，则需要加上 static 修饰符。
   foo = [4,5,6,7,5];
   foo[1] = 10; // 被重新赋值以后 就可以被修改了
 ```
+# 可见性修饰符
 
+在 dart 中没有类似于 java 的 public、privte 等可见性修饰符，一般的方法或者变量都是通常意义中 java 的 public，如果想要定义一个私有的可以在方法名或者变量名前面加上 `_`，代表当前包以外是不可见的，比如：
+
+```dart
+// 在 utils.dart 文件中
+class Logger {
+  
+  ...//something
+
+  Logger._internal(this.name);
+}
+
+
+// 在 main.dart 文件中
+import './utils.dart';
+
+main(List<String> args) {
+  Logger._internal("test"); // 在编译器中，这里会报错的，因为 _internal 对外是不可见的。
+}
+
+```
 
 # 基本类型
 
