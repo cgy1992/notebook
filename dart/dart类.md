@@ -260,3 +260,6 @@ abstract class AbstractFactoryClass {
 
 比如上面的代码，看起来没什么问题，运行的时候就报错了。所以 使用 factory 关键字也只是使抽象来看起来能被实例化一样，实际上并不能被实例化。。。
 
+## 隐式接口
+
+在 dart 中所有的类都可以看做是接口，dart 中没有 interface 关键字。
