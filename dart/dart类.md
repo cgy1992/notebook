@@ -263,3 +263,7 @@ abstract class AbstractFactoryClass {
 ## 隐式接口
 
 在 dart 中所有的类都可以看做是接口，dart 中没有 interface 关键字。
+
+关于这个的说明可以参考这个博客-[Eliminating Interface Declarations from Dart](https://news.dartlang.org/2012/06/proposal-to-eliminate-interface.html)
+
+大概就是说在 dart 中所有的类都是隐式的接口，而且接口完全可以用纯粹的抽象类来代替
