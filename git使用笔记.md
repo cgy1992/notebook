@@ -91,3 +91,32 @@ https://blog.csdn.net/liuxu0703/article/details/54343096
 
 
 gitdir=$(git rev-parse --git-dir); scp -p -P 29418 jieyu.chen@gerrit.17zuoye.net:hooks/commit-msg ${gitdir}/hooks/
+
+
+# 标签
+
+## 打标签
+
+> git tag -a vx.x.x -m "xxxxx"
+
+也可以不用 -m 以及内容，但是在 gerrit 上有时候没有注释的话标签不能推送到服务器，所以最好还是加上
+
+## 查看标签
+
+> git tag
+
+## 补充标签
+
+比如某次上线后忘了打标签，可以针对某次 commit 来打标签
+
+> git tag -a vx.x.x changeID -m "xxx"
+
+## 推送标签
+
+推送所有标签
+
+> git push origin --tags  
+
+推送某个标签
+
+> git push origin vx.x
