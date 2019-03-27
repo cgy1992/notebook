@@ -44,3 +44,22 @@
     -Dfile=需要上传的包所在位置
     -Durl=远程仓库的位置
     -DrepositoryId=仓库ID  // 注意这个 ID 要和上面 server 配置的 ID 一样
+
+# gradle 引用本地仓库
+
+```gradle
+
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+    }
+}
+````
+
+同样的要在 mavenRoot\conf\settings.xml 中配置好本地仓库的路径
