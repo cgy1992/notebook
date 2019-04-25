@@ -92,6 +92,30 @@ https://blog.csdn.net/liuxu0703/article/details/54343096
 
 gitdir=$(git rev-parse --git-dir); scp -p -P 29418 jieyu.chen@gerrit.17zuoye.net:hooks/commit-msg ${gitdir}/hooks/
 
+## 如果之前有多个提交没有 change-id 的解决办法：
+
+首先还是像上面说的那样执行提示给出的命令，然后
+
+1、git branch work（从最新节点建立分支，相当于将自己的修改备份到新的分支）
+
+2、git reset --hard HEAD~10（强制回滚多个节点）
+
+3、git status 
+
+如果显示nothing to commit, working directory clean，跳到5.
+
+如果显示has x commit，xx git push 跳到2.
+
+4、git clean -df
+
+5、git pull（使得当前分支和线上统一）
+
+6、git merge --squash work（将最开始建立的分支中的内容合并回来）
+
+7、git commit
+
+8、git push
+
 
 # 标签
 

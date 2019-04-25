@@ -19,3 +19,14 @@
     adb shell dumpsys activity activities | sed -En -e '/Running activities/,/Run #0/p'
 
 有时候会提示sed不是内部或者外部命令，可以先执行adb shell，然后执行adb shell后的命令即可。
+
+
+
+## 查看当前应用的线程数
+
+
+ps 查找当前 pid
+
+cat /proc/pid/status
+
+打印出来的信息中 threads 就是当前进程中包含的线程数

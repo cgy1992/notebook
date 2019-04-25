@@ -45,6 +45,10 @@
     -Durl=远程仓库的位置
     -DrepositoryId=仓库ID  // 注意这个 ID 要和上面 server 配置的 ID 一样
 
+# 使用 gradle 脚本上传 aar 包
+
+
+
 # gradle 引用本地仓库
 
 ```gradle
